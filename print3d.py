@@ -10,10 +10,12 @@ class Printer:
         self.ser = serial.Serial(port=port, baudrate=baudrate)
         self.set_absolute()
         self.write('M18 S0\n') # Disable motor timeout
+        self.write('M92 X800 Y800\n') # Change Steps per mm
+        self.write('M201 X200 Y200') # Change acceleration
 
-        self.affine = np.array([[0,  0, -1,  0],
-                                [0, -1,  0,  0],
+        self.affine = np.array([[0,  0,  1,  0],
                                 [1,  0,  0,  0],
+                                [0, -1,  0,  0],
                                 [0,  0,  0,  1]])
     
     def write(self, command: str):
@@ -23,6 +25,12 @@ class Printer:
     def read(self):
         """Read a string response from the printer"""
         return self.ser.readline().decode()
+
+    def write_read(self, command: str):
+        """Write a string encoded properly for the printer and return the response"""
+        self.ser.reset_input_buffer()
+        self.write(command + '\n')
+        return self.read()
 
     def home(self):
         """Auto-home all three axes"""

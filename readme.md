@@ -35,7 +35,7 @@ e.g. `python .\b0_map.py COM4 COM5 circle -c 110 101 152 -s ../Smallbach_ring_0_
 
 `--set_center_pos -x` interactively set the center position of the magnet.
 
-`--center -c` is the center of the measurement volume, in mm. Default is (110, 110, 250).
+`--center -c` is the center of the measurement volume, in mm, in the printer coordinate system. Default is (53.5, 54.0, 90.8).
 
 `--save_name -s` is the filename to save the results in (in CSV format)
 
@@ -60,6 +60,8 @@ with parameters having the same definitions as in b0_map.py
 print3d.py is a library to interface with a 3D printer over a serial connection for the purposes of field mapping.
 
 Create a printer object (`p = print3d.Printer(port)`) and use that to control the printer (e.g. `p.move_wait((X, Y, Z))`).
+
+All inputs to mapping functions are in terms of the magnet coordinates - the Printer class automatically performs the affine transformation into the printer coordinate space.
 
 Notes for usage:
  - This was designed to work with a Ender-5 Pro, so it may require tweaking for other printers

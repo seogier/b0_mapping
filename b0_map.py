@@ -34,7 +34,7 @@ def cube_gen(side, spacing):
     Z = Z.flatten()
 
     points = np.stack((X, Y, Z)).T
-    points = points[np.lexsort((points[:,0],points[:,1],points[:,2]))]
+    points = points[np.lexsort((points[:,2],points[:,1],points[:,0]))]
     return points
 
 def sphere_gen(diameter, spacing):
@@ -80,7 +80,7 @@ def cylinder_gen(diameter, spacing):
     return cylinder
 
 def circle_gen(diameter, spacing):
-    """Generate a list of points occupying a circle in the YZ plane of the printer of a given diameter
+    """Generate a list of points occupying a circle in the YZ plane of the magnet of a given diameter
 
     args:
         diameter: circle diameter in mm
@@ -119,7 +119,7 @@ if __name__ == '__main__':
     parser.add_argument('shape', type=str, action='store', choices=['cube', 'cylinder', 'sphere', 'circle'], help='Shape of sampling pattern', default='sphere')
     parser.add_argument('-d', '--diameter', action='store', default=100, help='Diameter of measurement volume (and length of cylinder if applicable) in mm')
     parser.add_argument('-x', '--set_center_pos', action='store_true', help='Use current position as center of measurement volume')
-    parser.add_argument('-c', '--center', action='store', nargs=3, default=[110,110,250], type=float)
+    parser.add_argument('-c', '--center', action='store', nargs=3, default=[53.5,54.0,90.8], type=float)
     parser.add_argument('-s', '--save_name', action='store', required=True)
     parser.add_argument('-p', '--spacing', action='store', default=5, type=float, help='Measurement point spacing in mm')
     parser.add_argument('-r', '--restart', action='store', default=0, type=int, help='Point to start at if restarting')
@@ -159,9 +159,9 @@ if __name__ == '__main__':
     print(f'Points are spaced every {spacing} mm')
 
     # Define affine transformation to move from magnet to printer coordinate system
-    printer.affine =  np.array([[0,  0, -1, center[0]],
-                                [0, -1,  0, center[1]],
-                                [1,  0,  0, center[2]],
+    printer.affine =  np.array([[0,  0,  1, center[0]],
+                                [1,  0,  0, center[1]],
+                                [0, -1,  0, center[2]],
                                 [0,  0,  0,  0]])
                 
     if shape == 'cube':
